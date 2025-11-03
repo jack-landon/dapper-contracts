@@ -1,11 +1,50 @@
-# Mezo Details
+# Dapper Contracts
 
-## Contracts
+<p align="left">
+  <img src="https://dapper-inky.vercel.app/dapper-logo.jpeg" alt="Dapper logo" height="120" />
+</p>
 
-Mainnet MUSD: 0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186
-Testnet MUSD: 0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503
+### What is Dapper?
 
-PoolFactory 0x83FE469C636C4081b87bA5b3Ae9991c6Ed104248
-MUSD/BTC Pool 0x52e604c44417233b6CcEDDDc0d640A405Caacefb
-MUSD/mUSDC Pool 0xEd812AEc0Fecc8fD882Ac3eccC43f3aA80A6c356
-MUSD/mUSDT Pool 0x10906a9E9215939561597b4C8e4b98F93c02031A
+Dapper lets users create a term-based stake, similar to a Certificate of Deposit. You choose an amount and a duration. The protocol immediately mints the yield for your position up front, while your principal remains locked for the term.
+
+### How it works
+
+- **Select amount and duration**: The user chooses how much to stake and for how long.
+- **Mint yield up front**: On creation, the position mints its expected yield to the user immediately.
+- **Principal allocation**: During the term, the staked principal is deposited into August yield vaults to generate returns.
+- **Maturity and withdrawal**: At the end of the term, the user can withdraw their principal.
+- **Excess yield**: Because the vaults are expected to earn more than the principal obligation at maturity, the surplus yield is directed to the treasury.
+
+### Key properties
+
+- **Immediate liquidity of yield**: Users receive their yield at the start, not at the end.
+- **Capital efficiency**: Principal is actively deployed in August vaults during the term.
+- **Treasury accrual**: Any yield beyond the principal payout accrues to the treasury.
+
+### Repository layout (high level)
+
+- `src/Dapper.sol`: Core logic for creating term stakes and minting yield up front.
+- `src/Vault.sol`: Integration surface for depositing principal into August yield vaults.
+- `script/Dapper.s.sol`: Deployment scripts (Foundry).
+- `test/`: Foundry tests.
+
+### Developing
+
+This repository uses Foundry.
+
+```bash
+forge install
+forge build
+forge test -vvv
+```
+
+### Notes
+
+- Terms and parameters are subject to change; consult the contracts for exact calculations and constraints.
+- Integrations reference August yield vaults for principal deployment.
+
+## Security
+
+- **Aderyn static analysis report**: see [`report.md`](report.md)
+- **Slither static analysis report**: see [`report-slither.txt`](report-slither.txt)

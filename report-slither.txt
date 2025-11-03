@@ -1,0 +1,114 @@
+MockERC20.constructor(string,string).name (src/MockERC20.sol#6) shadows:
+        - ERC20.name() (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#52-54) (function)
+        - IERC20Metadata.name() (lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol#15) (function)
+MockERC20.constructor(string,string).symbol (src/MockERC20.sol#6) shadows:
+        - ERC20.symbol() (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#60-62) (function)
+        - IERC20Metadata.symbol() (lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol#20) (function)
+Vault.constructor(address,string,string)._name (src/Vault.sol#7) shadows:
+        - ERC20._name (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#36) (state variable)
+Vault.constructor(address,string,string)._symbol (src/Vault.sol#7) shadows:
+        - ERC20._symbol (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#37) (state variable)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#local-variable-shadowing
+INFO:Detectors:
+Dapper.constructor(address,uint256,address)._depositToken (src/Dapper.sol#35) lacks a zero-check on :
+                - depositToken = _depositToken (src/Dapper.sol#36)
+Dapper.constructor(address,uint256,address)._yieldVaultAddress (src/Dapper.sol#35) lacks a zero-check on :
+                - yieldVaultAddress = _yieldVaultAddress (src/Dapper.sol#40)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-zero-address-validation
+INFO:Detectors:
+Reentrancy in Dapper.stake(uint256,uint256) (src/Dapper.sol#46-76):
+        External calls:
+        - shares = Vault(yieldVaultAddress).deposit(netAmount,address(this)) (src/Dapper.sol#60)
+        State variables written after the call(s):
+        - stakeDetails[id] = newStake (src/Dapper.sol#70)
+        - id = ++ stakeId (src/Dapper.sol#63)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-2
+INFO:Detectors:
+Reentrancy in Dapper.stake(uint256,uint256) (src/Dapper.sol#46-76):
+        External calls:
+        - shares = Vault(yieldVaultAddress).deposit(netAmount,address(this)) (src/Dapper.sol#60)
+        - _safeMint(msg.sender,id) (src/Dapper.sol#73)
+                - ERC721Utils.checkOnERC721Received(_msgSender(),address(0),to,tokenId,data) (lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol#289)
+                - retval = IERC721Receiver(to).onERC721Received(operator,from,tokenId,data) (lib/openzeppelin-contracts/contracts/token/ERC721/utils/ERC721Utils.sol#33-47)
+        Event emitted after the call(s):
+        - Approval(owner,to,tokenId) (lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol#394)
+                - _safeMint(msg.sender,id) (src/Dapper.sol#73)
+        - Staked(id,msg.sender,amount,lockDuration,unlockTimestamp,interestPaid) (src/Dapper.sol#75)
+        - Transfer(from,to,tokenId) (lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol#242)
+                - _safeMint(msg.sender,id) (src/Dapper.sol#73)
+Reentrancy in Dapper.unstake(uint256) (src/Dapper.sol#78-104):
+        External calls:
+        - totalAssets = Vault(yieldVaultAddress).redeem(targetStake.shares,address(this),address(this)) (src/Dapper.sol#90)
+        Event emitted after the call(s):
+        - Unstaked(_stakeId,msg.sender,feeGenerated) (src/Dapper.sol#103)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-3
+INFO:Detectors:
+Dapper.unstake(uint256) (src/Dapper.sol#78-104) uses timestamp for comparisons
+        Dangerous comparisons:
+        - require(bool,string)(targetStake.unlockTimestamp <= block.timestamp,Stake has not expired) (src/Dapper.sol#83)
+        - totalAssets > targetStake.amountStaked (src/Dapper.sol#98)
+        - totalAssets > targetStake.amountStaked (src/Dapper.sol#93)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#block-timestamp
+INFO:Detectors:
+5 different versions of Solidity are used:
+        - Version constraint >=0.6.2 is used by:
+                ->=0.6.2 (lib/openzeppelin-contracts/contracts/interfaces/IERC1363.sol#4)
+                ->=0.6.2 (lib/openzeppelin-contracts/contracts/interfaces/IERC4626.sol#4)
+                ->=0.6.2 (lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol#4)
+                ->=0.6.2 (lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol#4)
+                ->=0.6.2 (lib/openzeppelin-contracts/contracts/token/ERC721/extensions/IERC721Metadata.sol#4)
+        - Version constraint >=0.4.16 is used by:
+                ->=0.4.16 (lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol#4)
+                ->=0.4.16 (lib/openzeppelin-contracts/contracts/interfaces/IERC20.sol#4)
+                ->=0.4.16 (lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol#4)
+                ->=0.4.16 (lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol#4)
+        - Version constraint >=0.8.4 is used by:
+                ->=0.8.4 (lib/openzeppelin-contracts/contracts/interfaces/draft-IERC6093.sol#3)
+        - Version constraint ^0.8.20 is used by:
+                -^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#4)
+                -^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC4626.sol#4)
+                -^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#4)
+                -^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol#4)
+                -^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Burnable.sol#4)
+                -^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC721/utils/ERC721Utils.sol#4)
+                -^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Context.sol#4)
+                -^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Panic.sol#4)
+                -^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Strings.sol#4)
+                -^0.8.20 (lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol#4)
+                -^0.8.20 (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#4)
+                -^0.8.20 (lib/openzeppelin-contracts/contracts/utils/math/SafeCast.sol#5)
+                -^0.8.20 (lib/openzeppelin-contracts/contracts/utils/math/SignedMath.sol#4)
+                -^0.8.20 (src/Dapper.sol#2)
+                -^0.8.20 (src/MockERC20.sol#1)
+                -^0.8.20 (src/Vault.sol#2)
+        - Version constraint >=0.5.0 is used by:
+                ->=0.5.0 (lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol#4)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#different-pragma-directives-are-used
+INFO:Detectors:
+Version constraint ^0.8.20 contains known severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)
+        - VerbatimInvalidDeduplication
+        - FullInlinerNonExpressionSplitArgumentEvaluationOrder
+        - MissingSideEffectsOnSelectorAccess.
+It is used by:
+        - ^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#4)
+        - ^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC20/extensions/ERC4626.sol#4)
+        - ^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol#4)
+        - ^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol#4)
+        - ^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Burnable.sol#4)
+        - ^0.8.20 (lib/openzeppelin-contracts/contracts/token/ERC721/utils/ERC721Utils.sol#4)
+        - ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Context.sol#4)
+        - ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Panic.sol#4)
+        - ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/Strings.sol#4)
+        - ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol#4)
+        - ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#4)
+        - ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/math/SafeCast.sol#5)
+        - ^0.8.20 (lib/openzeppelin-contracts/contracts/utils/math/SignedMath.sol#4)
+        - ^0.8.20 (src/Dapper.sol#2)
+        - ^0.8.20 (src/MockERC20.sol#1)
+        - ^0.8.20 (src/Vault.sol#2)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity
+INFO:Detectors:
+Dapper.beneficiaryVault (src/Dapper.sol#20) should be immutable 
+Dapper.deployer (src/Dapper.sol#16) should be immutable 
+Dapper.yieldVaultAddress (src/Dapper.sol#19) should be immutable 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#state-variables-that-could-be-declared-immutable
