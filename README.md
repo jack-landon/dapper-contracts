@@ -48,3 +48,11 @@ forge test -vvv
 
 - **Aderyn static analysis report**: see [`report.md`](report.md)
 - **Slither static analysis report**: see [`report-slither.txt`](report-slither.txt)
+
+## Addresses
+
+- **MUSD Dapper Contract**: 0x7F3534743D998ef4a9894624b49CCd45Aa4fffD8
+- **BTC Dapper Contract**: 0x6AC1C876236217C1DaDEae59B202b01eb1c7BDaF
+
+- **MUSD Treasury Contract**: 0x92687EFb0eA6D6DC3E6B295b8f382dF8E7355420
+- **BTC Treasury Contract**: 0xaBD7C734D79cDEc3dAC043968b848A44b05EDed4

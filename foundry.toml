@@ -4,3 +4,7 @@ out = "out"
 libs = ["lib"]
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
+
+# Target a pre-Shanghai EVM to avoid emitting PUSH0 (EIP-3855),
+# which some networks/testnets may not support yet.
+evm_version = "london"
